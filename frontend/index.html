@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Result Portal</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:linear-gradient(135deg,#0f172a,#1e293b,#334155);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+        }
+
+        .container{
+            width:100%;
+            max-width:850px;
+            background:rgba(255,255,255,0.08);
+            backdrop-filter:blur(15px);
+            border-radius:20px;
+            padding:30px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.4);
+            color:white;
+        }
+
+        h1{
+            text-align:center;
+            color:#38bdf8;
+            margin-bottom:10px;
+        }
+
+        .subtitle{
+            text-align:center;
+            color:#cbd5e1;
+            margin-bottom:25px;
+        }
+
+        .search-box{
+            display:flex;
+            gap:10px;
+            margin-bottom:20px;
+        }
+
+        input{
+            flex:1;
+            padding:14px;
+            border:none;
+            border-radius:10px;
+            font-size:16px;
+            outline:none;
+        }
+
+        button{
+            padding:14px 20px;
+            border:none;
+            border-radius:10px;
+            background:#0ea5e9;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        button:hover{
+            background:#0284c7;
+        }
+
+        .student-card{
+            background:rgba(255,255,255,0.08);
+            border-radius:15px;
+            padding:20px;
+            margin-top:20px;
+        }
+
+        .student-card h2{
+            color:#22c55e;
+            margin-bottom:15px;
+        }
+
+        .student-card p{
+            margin-bottom:10px;
+        }
+
+        table{
+            width:100%;
+            margin-top:15px;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#0ea5e9;
+            padding:12px;
+        }
+
+        td{
+            padding:12px;
+            background:rgba(255,255,255,0.08);
+            border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+
+        .not-found{
+            background:#dc2626;
+            color:white;
+            text-align:center;
+            padding:15px;
+            border-radius:10px;
+            margin-top:20px;
+            font-weight:bold;
+        }
+
+        @media(max-width:600px){
+            .search-box{
+                flex-direction:column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎓 Student Result Portal</h1>
+
+        <p class="subtitle">
+            Search Student Results Using Register Number
+        </p>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="register_number"
+                placeholder="Enter Register Number">
+
+            <button onclick="searchResult()">
+                Search Result
+            </button>
+        </div>
+
+        <div id="result"></div>
+
+    </div>
+
+    <script>
+
+        async function searchResult() {
+
+            let registerNumber =
+                document.getElementById(
+                    "register_number"
+                ).value;
+
+            let response =
+                await fetch(
+                    "http://127.0.0.1:8000/results"
+                );
+
+            let students =
+                await response.json();
+
+            let student =
+                students.find(
+                    student =>
+                    student.register_number === registerNumber
+                );
+
+            if (student) {
+
+                let output = `
+                    <div class="student-card">
+
+                        <h2>${student.student_name}</h2>
+
+                        <p>
+                            <strong>Register Number:</strong>
+                            ${student.register_number}
+                        </p>
+
+                        <p>
+                            <strong>Department:</strong>
+                            ${student.department}
+                        </p>
+
+                        <table>
+
+                            <tr>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                            </tr>
+                `;
+
+                student.subjects.forEach(subject => {
+
+                    output += `
+                        <tr>
+                            <td>${subject.subject_name}</td>
+                            <td>${subject.grade}</td>
+                        </tr>
+                    `;
+                });
+
+                output += `
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById("result").innerHTML =
+                    output;
+
+            } else {
+
+                document.getElementById("result").innerHTML =
+                    '<div class="not-found">❌ Student Not Found</div>';
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
