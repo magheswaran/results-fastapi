@@ -72,5 +72,24 @@ def get_results():
                     "grade": "A"
                 }
             ]
+        },
+        {
+            "student_name": "adline",
+            "register_number": "13",
+            "Grade": "5",
+            "subjects": [
+                {
+                    "subject_name": "english",
+                    "grade": "A++"
+                },
+                {
+                    "subject_name": "Maths",
+                    "grade": "A"
+                },
+                {
+                    "subject_name": "Evs",
+                    "grade": "A+"
+                }
+            ]
         }
     ]
